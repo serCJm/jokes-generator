@@ -140,8 +140,14 @@ window.onload = function () {
     }
 
     function randomFont() {
-        let fontDice = Math.floor(Math.random() * 2);
-        console.log(fontDice);
+        let fontDice = Math.floor(Math.random() * 3);
+        if (fontDice == 0) {
+            this.style.fontFamily = 'Lato';
+        } else if (fontDice == 1) {
+            this.style.fontFamily = 'Dosis';
+        } else {
+            this.style.fontFamily = 'Cormorant Garamond';
+        }
     }
 
     // possibly position elements randomly on the screen
