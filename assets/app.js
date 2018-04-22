@@ -11,6 +11,8 @@ window.onload = function () {
                 return false;
             }
 
+            xhr.onloadstart = displayLoader;
+
             xhr.onload = requestContents;
 
             xhr.onerror = function () {
@@ -33,6 +35,16 @@ window.onload = function () {
         });
     }
 
+    function displayLoader() {
+        let loader = document.querySelector('.loader');
+        loader.style.display = 'flex';
+    }
+
+    function removeLoader() {
+        let loader = document.querySelector('.loader');
+        loader.style.display = 'none';
+    }
+
     let jokes = get('https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_ten');
     let chuck = get('http://api.icndb.com/jokes/random/5');
 
@@ -45,6 +57,7 @@ window.onload = function () {
     }).then(function () {
         resizeAllGridItems();
         window.addEventListener("resize", resizeAllGridItems);
+        removeLoader();
     }).catch(function (error) {
         console.log(error)
     });
@@ -76,13 +89,19 @@ window.onload = function () {
         // append the joke to the div in h2 tag
         let filledAreas = [];
         for (let joke of this) {
+            // extra div to allow masonry grid dynamic resizing
             let jokeItem = document.createElement('div');
             jokeItem.classList.add('joke-item');
+            // content for the joke
             let content = document.createElement('div');
             content.classList.add('content');
             let htmlH = document.createElement('h2');
             htmlH.classList.add('joke');
+            // create text from joke data
             let text = document.createTextNode(joke);
+            // generate random font for h2 element
+            randomFont.call(htmlH);
+            // append elements to each other
             htmlH.appendChild(text);
             content.appendChild(htmlH);
             jokeItem.appendChild(content);
@@ -118,6 +137,11 @@ window.onload = function () {
         for (i = 0; i < allItems.length; i++) {
             resizeGridItem(allItems[i]);
         }
+    }
+
+    function randomFont() {
+        let fontDice = Math.floor(Math.random() * 2);
+        console.log(fontDice);
     }
 
     // possibly position elements randomly on the screen
