@@ -42,7 +42,9 @@ window.onload = function () {
         // select element where display jokes
         let tiles = document.getElementById('tiles');
         createJokeEl.call(allJokes, tiles);
-
+    }).then(function () {
+        resizeAllGridItems();
+        window.addEventListener("resize", resizeAllGridItems);
     }).catch(function (error) {
         console.log(error)
     });
@@ -58,7 +60,6 @@ window.onload = function () {
         // extract misc jokes
         for (let joke of miscJokes) {
             allJokes.push(joke.setup + ' ' + joke.punchline);
-            
         }
         // extract chuck jokes
         for (let joke of chuckJokes.value) {
@@ -75,16 +76,21 @@ window.onload = function () {
         // append the joke to the div in h2 tag
         let filledAreas = [];
         for (let joke of this) {
-            let htmlH1 = document.createElement('h2');
+            let jokeItem = document.createElement('div');
+            jokeItem.classList.add('joke-item');
+            let content = document.createElement('div');
+            content.classList.add('content');
+            let htmlH = document.createElement('h2');
+            htmlH.classList.add('joke');
             let text = document.createTextNode(joke);
-            htmlH1.classList.add('joke');
-            htmlH1.appendChild(text);
-            parent.appendChild(htmlH1);
-            // randomly position an element
-            // randomPositioning.call(htmlH1, filledAreas);
+            htmlH.appendChild(text);
+            content.appendChild(htmlH);
+            jokeItem.appendChild(content);
+            parent.appendChild(jokeItem);
         }
     }
 
+    // shuffle data in an array to mix prog jokes from chuck
     function shuffleArray() {
         let counter = this.length;
         while (counter > 0) {
@@ -96,6 +102,26 @@ window.onload = function () {
         }
         return this;
     }
+
+    // taken from https://medium.com/@andybarefoot/a-masonry-style-layout-using-css-grid-8c663d355ebb
+    // resize grid items to make them look masonry-style
+    function resizeGridItem(item) {
+        let grid = document.querySelector('#tiles');
+        let rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+        let rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
+        let rowSpan = Math.ceil((item.querySelector('.content').getBoundingClientRect().height + rowGap) / (rowHeight + rowGap));
+        item.style.gridRowEnd = "span " + rowSpan;
+    }
+
+    function resizeAllGridItems() {
+        let allItems = document.getElementsByClassName("joke-item");
+        for (i = 0; i < allItems.length; i++) {
+            resizeGridItem(allItems[i]);
+        }
+    }
+
+    // possibly position elements randomly on the screen
+    // abandon because it looks ugly
 
     // function randomPositioning(filledAreas) {
     //     let rangeX = 0;
