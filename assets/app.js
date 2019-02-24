@@ -48,7 +48,7 @@ window.onload = function() {
   }
 
   let jokes = get("https://official-joke-api.appspot.com/random_ten");
-  let chuck = get("http://api.icndb.com/jokes/random/5");
+  let chuck = get("https://api.icndb.com/jokes/random/5");
 
   Promise.all([jokes, chuck])
     .then(function(data) {
